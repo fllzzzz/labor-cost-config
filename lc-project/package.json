@@ -1,0 +1,13 @@
+{
+  "name": "lc-project",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "lc-porject.repository.js",
+  "scripts": {
+    "agg": "node ./lc-project.aggregate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
