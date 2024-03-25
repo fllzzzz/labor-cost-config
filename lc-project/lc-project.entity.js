@@ -9,13 +9,14 @@ export class Entity {
 	mode;
 	date;
 	modifyScenario;
+	context;
 
 	/**
 	 * @typedef {Object} Config
 	 * @property {number} id 项目编号
 	 * @property {string} name 项目名称
 	 * @property {(
-	 *	| '实时计算模式' 
+	 *	| '实时计算模式'
 	 * 	| '入库倒推模式'
 	 * )} mode 项目模式
 	 * @property {string} date 统计截止时间
@@ -27,7 +28,7 @@ export class Entity {
 	 * @property {number} id 项目编号
 	 * @property {string} name 项目名称
 	 * @property {(
-	 *	| '实时计算模式' 
+	 *	| '实时计算模式'
 	 * 	| '入库倒推模式'
 	 * )} mode 项目模式
 	 * @property {string} date 统计截止时间
@@ -44,9 +45,28 @@ export class Entity {
 	}
 
 	/**
-	 * @param {string[]} key 操作的对象名字
-	 * @param 
+	 * @param {string} key 属性名
+	 * @param {(context) => Map<string, any>} fn callback
+	 * @returns {void}
 	 */
-	split() {};
-	union() {};
-};
+	separate(key, fn) {
+		const fnResultList = [];
+
+		this[key] instanceof Array
+			? this[key].forEach(item => {
+					fnResultList.push(fn(item));
+			  })
+			: fnResultList.push(fn(this[key]));
+
+		fnResultList.forEach(map => {
+			Array.from(map.entries()).forEach(
+				ctx => (this[ctx[0]] = ctx[1])
+			);
+		});
+	}
+
+	/**
+	 * 
+	 */
+	aggregation() {}
+}

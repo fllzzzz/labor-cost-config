@@ -1,11 +1,11 @@
 {
-  "name": "lc-project",
+  "name": "labor-cost-config",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "lc-porject.repository.js",
+  "main": "index.js",
   "scripts": {
-    "agg": "node ./lc-project.aggregate.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
