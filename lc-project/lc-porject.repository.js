@@ -1,28 +1,97 @@
-import { Entity } from "./lc-project.entity.js";
 import { shallowRef } from "vue";
+import { entityList } from './lc-project.data.mock.js';
 
-const baseURL = "http://192.168.110.120:8088";
-const modeMap = new Map([
-	["实时计算模式", 1],
-	["入库倒推模式", 2],
-]);
-const scopeMap = new Map([
-	["同步修改前的价格", 1],
-	["影响修改后的价格", 2],
-]);
-const propertyNameMap = new Map([]);
+/**
+ * @typedef {Object} Context
+ * @property {string} baseURL
+ * @property {string} dateformat
+ * @property {string[]} modeList
+ * @property {string[]} scopeList
+ * @property {string[]} modifyScreenList
+ * @property {Map<string, string>} apiMap
+ * @property {Map<string, number>} modeEumnMap
+ * @property {Map<string, number>} scopeEumnMap
+ */
 
 export class Repository {
-	/**
-	 * @type {Entity[]}
-	 */
-	entityList = shallowRef([]);
-	modeList = ["实时计算模式", "入库倒推模式"];
-	modifyScreenList = [
-		"配置价格修改场景",
-		"单个价格修改场景",
-	];
-	scopeList = ["同步修改前的价格", "影响修改后的价格"];
-	dateFormat = "YYYY/M/D";
+    entityList;
+    context;
+    
+    constructor() {
+        this.entityList = shallowRef([]);
+        this.context = {
+            baseURL: "",
+            dateformat: "",
+            modeList: [],
+            scopeList: [],
+            modifyScreenList: [],
+            apiMap: new Map(),
+            modeEumnMap: new Map(),
+            scopeEumnMap: new Map(),
+        };
+    }
 
+    loadMockData() {
+        this.entityList.value = entityList;
+    }
+
+    load(mode, fn) {
+        fetch(
+            `${
+                this.context.baseURL +
+                this.context.apiMap.get("load")
+            }?` +
+                `statisticsMode=${this.context.modeEumnMap.get(
+                    mode
+                )}`,
+            {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "x-www-form-urlencoded",
+                },
+            }
+        )
+            .then(res => res.json())
+            .then(result => fn(result.data))
+            .then(
+                entityList =>
+                    (this.entityList.value = entityList)
+            );
+    }
+
+    find(index) {
+        return this.entityList.value.find(
+            entity => entity.id === index
+        );
+    }
+
+    save(entity, fn) {
+        const _data = fn({
+            entity,
+            modeEumnMap: this.modeEumnMap,
+            scopeEumnMap: this.scopeEumnMap,
+        });
+
+        debugger;
+
+        fetch(
+            `${
+                this.context.baseURL +
+                this.context.apiMap.get("load")
+            }?`,
+            {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(_data),
+            }
+        )
+            .then(res => res.json())
+            .then(result => {
+                console.log(result);
+            });
+    }
 }

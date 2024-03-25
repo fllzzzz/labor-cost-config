@@ -2,7 +2,7 @@ import { ModifyContext } from "./lc-project.value.js";
 
 /**
  * @typedef {Object} Config
- * @property {number} id 项目编号
+ * @property {string} id 项目编号
  * @property {string} name 项目名称
  * @property {(
  *	| '实时计算模式'
@@ -21,8 +21,7 @@ export class Entity {
 	mode;
 	date;
 	modifyScenario;
-	context;
-
+	
 	/**
 	 * @param {Config} config
 	 */

@@ -1,9 +1,8 @@
 import { Entity } from "./lc-project.entity.js";
-import { ModifyContext } from "./lc-project.value.js";
 
 export const entityList = [
 	new Entity({
-		id: 1,
+		id: '1-1',
 		name: "项目1",
 		mode: '实时计算模式',
 		date: "2020-01-01",
@@ -21,7 +20,7 @@ export const entityList = [
 		],
 	}),
 	new Entity({
-		id: 2,
+		id: '1-2',
 		name: "项目2",
 		mode: "实时计算模式",
 		date: "2020-01-01",
