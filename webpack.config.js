@@ -35,6 +35,10 @@ export default {
 				test: /\.scss$/,
 				use: ['style-loader', 'css-loader', 'scss-loader']
 			},
+			{
+				test: /\.jsx$/,
+				use: 'babel-loader'
+			},
 		],
 	},
 	plugins: [
