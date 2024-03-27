@@ -3,67 +3,48 @@
     <div class="lc-paintedParts">
         <div class="lc-paintedParts__header"></div>
         <div class="lc-paintedParts__content">
-			<MultiConfigure></MultiConfigure>
+            <x-dialog v-model="open">
+                <template #content>
+                    <MulitiConfigure></MulitiConfigure>
+                </template>
+            </x-dialog>
         </div>
     </div>
 </template>
 
 <script setup lang="jsx">
-import { Entity } from "./lc-paintedParts.entity";
-import { defineComponent } from "vue";
-import {
-    ElDialog,
-    ElTable,
-    ElTableColumn,
-} from "element-plus";
+import { defineComponent, ref } from "vue";
+import { ElTag } from "element-plus";
+import MulitiConfigure from "./muliti-configure.vue";
+import XDialog from "./x-dialog.vue";
 
-const entity = new Entity();
+const open = ref(true);
 
-const Dialog = defineComponent({
-    props: ["shouldOpen"],
-    slots: ["content"],
-    setup: (props, { slots }) => {
-        return () => (
-            <ElDialog
-                v-model={props.shouldOpen}
-                title={""}
-                append-to-body={true}
-                width="fit-content"
-                top="20vh"
-            >
-                {slots.content?.()}
-            </ElDialog>
-        );
-    },
-});
-
-const MultiConfigure = defineComponent({
+const Tags = defineComponent({
+    props: ["list"],
     setup: props => {
         return () => (
-            <ElTable data={[{}]}>
-                <ElTableColumn
-                    label="序号"
-                    type="index"
-                ></ElTableColumn>
-                <ElTableColumn
-                    label="构件类型"
-                >{{
-					header: () => 2132
-				}}</ElTableColumn>
-                <ElTableColumn
-                    label="构件名称"
-                    prop="name"
-                ></ElTableColumn>
-                <ElTableColumn
-                    label="规格"
-                    prop="specification"
-                ></ElTableColumn>
-                {}
-                <ElTableColumn label="工序"></ElTableColumn>
-                <ElTableColumn label="计量方式"></ElTableColumn>
-                {}
-            </ElTable>
+            <div
+                style={{
+                    display: "flex",
+                    flexFlow: "row wrap",
+                }}
+            >
+                {props.list.map(item => (
+                    <ElTag
+                        closable
+                        type="info"
+                        style={{
+                            marginRight: "0.3vw",
+                        }}
+                    >
+                        {item}
+                    </ElTag>
+                ))}
+            </div>
         );
     },
 });
 </script>
+
+<style lang="scss" scope></style>

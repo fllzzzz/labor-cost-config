@@ -2,7 +2,7 @@
  * @member {string[]} _type 构件类型
  * @member {string[]} _name 构件名称
  * @member {string[]} _specification 规格
- * @member {Map<string, string[]>} _parameter 参数
+ * @member {Map<string, [number, number]>} _parameter 参数
  * @member {string[]} _processList 工序
  * @member {string} _measureUnit 计量单位
  * @member {Map<string, number>} _prices 价格
@@ -23,11 +23,34 @@ export class Entity {
         return value instanceof Array ? true : false;
     }
 
-    isMapItem(type, value) {
-        if (!isArray(value)) return false;
-        if (typeof value[0] !== type || !value[1])
-            return false;
-        return true;
+    isMap(type, value) {
+        let result = true;
+        if (!value instanceof Map) result = false;
+        const _fn = (...args) =>
+            args.map(v =>
+                v instanceof Object
+                    ? v instanceof Array
+                        ? "Array"
+                        : "Object"
+                    : Array.from(typeof v).map((s, i) =>
+                              i === 0 ? s.toUpperCase() : s
+                          )
+                          .reduce((a, b) => a.concat(b))
+            );
+
+        value.forEach((v, k) => {
+            if (v || (v === 0 && k) || k === 0) {
+                _fn(v, k).forEach(t => {
+                    if (
+                        type[1] !== t[0] ||
+                        type[0] !== t[1]
+                    )
+                        result = false;
+                });
+            }
+        });
+
+        return result;
     }
 
     get type() {
@@ -64,10 +87,10 @@ export class Entity {
         this._specification = value;
     }
     set parameter(value) {
-        if (!this.isMapItem("string", value))
+        if (!this.isMap(["String", "Array"], value))
             throw new TypeError();
 
-        this._parameter.set(value[0], value[1]);
+        this._parameter = value;
     }
     set processList(value) {
         if (!this.isArray(value)) throw new TypeError();
@@ -77,10 +100,10 @@ export class Entity {
         this._measureUnit = value;
     }
     set prices(value) {
-        if (!this.isMapItem("string", value))
+        if (!this.isMap(["String", "Number"], value))
             throw new TypeError();
 
-        this._prices.set(value[0], value[1]);
+        this._prices = value;
     }
 
     test() {
@@ -114,7 +137,19 @@ export class Entity {
     }
 
     expand(key) {
-        if(! this.isArray(this[key])) throw new TypeError();
-        return this[key].join(' ');
-    };
+        if (!this.isArray(this[key])) throw new TypeError();
+        return this[key].join(" ");
+    }
+
+    init() {
+        this.parameter.set("牛腿数", []);
+        this.parameter.set("构件零件比", []);
+        this.parameter.set("构件截面", []);
+        this.prices.set("编制内价格", 0);
+        this.prices.set("编制外价格", 0);
+
+        this.type = ["类型"];
+        this.name = ["名称"];
+        this.specification = ["规格"];
+    }
 }
